@@ -4,8 +4,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Lab__6
 {
-    internal class Flight()
+    internal class Flight(int N)
     {
+        int N = N;
         public enum FlightStatus
         {
             OnTime,
@@ -38,34 +39,45 @@ namespace Lab__6
             // Отримуємо масив "flights"
             JArray flightsArray = (JArray)jsonObject["flights"];
 
+            int i = 0;
             // Перебираємо кожен об'єкт у масиві
             foreach (JObject flight in flightsArray)
             {
-                this.FlightNumber = flight["FlightNumber"].ToString();
-                this.Airline = flight["Airline"].ToString();
-                this.Destination = flight["Destination"].ToString();
+                if (i == N)
+                {
+                    this.FlightNumber = flight["FlightNumber"].ToString();
+                    this.Airline = flight["Airline"].ToString();
+                    this.Destination = flight["Destination"].ToString();
 
-                string StDepartureTime = flight["DepartureTime"].ToString();
-                this.DepartureTime = DateTime.Parse(StDepartureTime);
+                    string StDepartureTime = flight["DepartureTime"].ToString();
+                    this.DepartureTime = DateTime.Parse(StDepartureTime);
 
-                string StArrivalTime = flight["ArrivalTime"].ToString();
-                this.ArrivalTime = DateTime.Parse(StArrivalTime);
+                    string StArrivalTime = flight["ArrivalTime"].ToString();
+                    this.ArrivalTime = DateTime.Parse(StArrivalTime);
 
-                string StStatus = flight["Status"].ToString();
-                if (Enum.TryParse(StStatus, out FlightStatus status)) 
-                { 
-                    this.Status = status; 
-                } 
-                else 
-                { 
-                    Console.WriteLine("Невідомий статус рейсу: " + StStatus); 
+                    string StStatus = flight["Status"].ToString();
+                    if (Enum.TryParse(StStatus, out FlightStatus status))
+                    {
+                        this.Status = status;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Невідомий статус рейсу: " + StStatus);
+                    }
+
+                    string StDuration = flight["Duration"].ToString();
+                    this.Duration = TimeSpan.Parse(StDuration);
+
+                    this.AircraftType = flight["AircraftType"].ToString();
+                    this.Terminal = flight["Terminal"].ToString();
                 }
 
-                string StDuration = flight["Duration"].ToString();
-                this.Duration = TimeSpan.Parse(StDuration);
-
-                this.AircraftType = flight["AircraftType"].ToString();
-                this.Terminal = flight["Terminal"].ToString();
+                i++;
+                if (N < 0 || N >= flightsArray.Count)
+                {
+                    //Console.WriteLine("Індекс рейсу поза межами допустимого діапазону.");
+                    return;
+                }
             }
         }
             
