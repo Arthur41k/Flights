@@ -4,9 +4,9 @@ using Newtonsoft.Json.Linq;
 
 namespace Lab__6
 {
-    internal class Flight(int N)
+    internal class Flight()
     {
-        int N = N;
+        
         public enum FlightStatus
         {
             OnTime,
@@ -27,8 +27,12 @@ namespace Lab__6
         public string AircraftType { get; set; }
         public string Terminal { get; set; }
 
-        
 
+        public JArray flightsArray = new JArray();
+
+        /// <summary>
+        /// Обробляє дані з JSON файлу і десеарелізує його в масив
+        /// </summary>
         public void LoadFlights()
         {
             string Path = "C:\\Users\\fakty\\OneDrive\\Рабочий стол\\Lab_#6\\flights_data.json";
@@ -37,7 +41,17 @@ namespace Lab__6
             JObject jsonObject = JObject.Parse(JsData);
 
             // Отримуємо масив "flights"
-            JArray flightsArray = (JArray)jsonObject["flights"];
+            this.flightsArray = (JArray)jsonObject["flights"];
+
+        }
+       
+        
+        /// <summary>
+        /// Зберігає дані про обраний Flight
+        /// </summary>
+        public void SaveFlight(int N)
+        {
+            
 
             int i = 0;
             // Перебираємо кожен об'єкт у масиві
