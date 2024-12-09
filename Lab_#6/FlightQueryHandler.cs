@@ -134,13 +134,10 @@ namespace Lab__6
                     }
 
                     // Фільтрація рейсів
-                    var filteredFlights = flg.flightsArray
-                        .Where(flight => DateTime.TryParse(flight["DepartureTime"]?.ToString(), out DateTime departureTime) &&
-                                         DateTime.TryParse(flight["ArrivalTime"]?.ToString(), out DateTime arrivalTime) &&
-                                         departureTime >= startTime &&
-                                         arrivalTime <= endTime &&
-                                         flight["Destination"]?.ToString().Equals(destination, StringComparison.OrdinalIgnoreCase) == true)
-                        .ToList();
+                    var filteredFlights = flg.flightsArray.Where(flight => DateTime.TryParse(flight["DepartureTime"]?.ToString(), out DateTime departureTime) 
+                    && DateTime.TryParse(flight["ArrivalTime"]?.ToString(), out DateTime arrivalTime) 
+                    && departureTime >= startTime && arrivalTime <= endTime && flight["Destination"]?.ToString().Equals(destination, StringComparison.OrdinalIgnoreCase) 
+                    == true).ToList();
 
                     // Вивід відфільтрованих рейсів
                     if (filteredFlights.Count > 0)
@@ -161,6 +158,71 @@ namespace Lab__6
                     Console.ResetColor();
                     break;
                 case 5:
+                    Console.WriteLine("Введіть початкову дату та час (Формат: yyyy-MM-ddTHH:mm:ss) або натисніть Enter, щоб пропустити:");
+                    Console.Write("###: ");
+                    string stTimeInput = Console.ReadLine();
+
+                    Console.WriteLine("Введіть кінцеву дату та час (Формат: yyyy-MM-ddTHH:mm:ss) або натисніть Enter, щоб пропустити:");
+                    Console.Write("###: ");
+                    string enTimeInput = Console.ReadLine();
+
+                    // Поточний час
+                    DateTime now = DateTime.Now;
+
+                    // Перевірка та перетворення введених дат
+                    DateTime? stTime = null;
+                    DateTime? enTime = null;
+
+                    if (!string.IsNullOrEmpty(stTimeInput))
+                    {
+                        if (!DateTime.TryParse(stTimeInput, out DateTime start))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Некоректний формат початкової дати. Спробуйте ще раз.");
+                            Console.ResetColor();
+                            break;
+                        }
+                        stTime = start;
+                    }
+
+                    if (!string.IsNullOrEmpty(enTimeInput))
+                    {
+                        if (!DateTime.TryParse(enTimeInput, out DateTime end))
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("Некоректний формат кінцевої дати. Спробуйте ще раз.");
+                            Console.ResetColor();
+                            break;
+                        }
+                        enTime = end;
+                    }
+
+
+                    // Фільтрація рейсів
+                    var filterFlights = flg.flightsArray
+                        .Where(flight => DateTime.TryParse(flight["DepartureTime"]?.ToString(), out DateTime departureTime) &&
+                                         DateTime.TryParse(flight["ArrivalTime"]?.ToString(), out DateTime arrivalTime) &&
+                                         (arrivalTime >= now.AddHours(-1) ||
+                                          (stTime.HasValue && enTime.HasValue && departureTime >= stTime && arrivalTime <= enTime)))
+                        .ToList();
+
+                    // Вивід відфільтрованих рейсів
+                    if (filterFlights.Count > 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine($"Рейси, які відповідають вашим критеріям:");
+                        foreach (JObject flight in filterFlights)
+                        {
+                            Console.WriteLine($"Рейс № {flight["FlightNumber"]} - Час відправлення: {flight["DepartureTime"]} - Час прибуття: {flight["ArrivalTime"]}- Пункт призначення: {flight["Destination"]}");
+                        }
+                    }
+                    else
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("На вибраний проміжок часу рейсів немає.");
+                    }
+
+                    Console.ResetColor();
                     break;
 
                 default: Console.WriteLine("Введено не правильний знак"); break;
