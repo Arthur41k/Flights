@@ -11,8 +11,7 @@ namespace Lab__6
 {
     internal class FlightQueryHandler
     {
-        /*Виконання запитів до інформаційної системи польотів.
-         * Створення звітів та відповідей на запити в консольному додатку.*/
+     
 
         public void Procesing()
         {
@@ -29,8 +28,9 @@ namespace Lab__6
                 "\n5)Повернути всі рейси, які прибули за останню годину або за вказаний проміжок часу");
             Console.ResetColor();
             Console.Write("###:");
-            int Num = int.Parse(Console.ReadLine());
-
+            int Num;
+            Num = int.Parse(Console.ReadLine()); 
+           
             Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine("Зчитуємо дані про польоти з бази даних");
             Thread.Sleep(1000);
@@ -45,6 +45,8 @@ namespace Lab__6
             switch (Num)
             {
                 case 1:
+                    FlightInformationSystem FIS = new FlightInformationSystem();
+
                     Console.WriteLine("Впишіть назву авіо компанії");
                     Console.Write("###:");
                     string company = Console.ReadLine();
@@ -56,11 +58,16 @@ namespace Lab__6
                         if(flight["Airline"]?.ToString() == company)
                         {
                             Console.WriteLine($"Рейс № {flight["FlightNumber"]}");
+                            FIS.ProcessingJson(flight);
                         }
+
                     }
                     Console.ResetColor();
+                    FIS.SaveJson();
                     break;
                 case 2:
+                    FlightInformationSystem fis = new FlightInformationSystem();
+
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Ось всі рейси що затримуються:");
                     Thread.Sleep(1500);
@@ -71,12 +78,16 @@ namespace Lab__6
                         {
                             
                             Console.WriteLine($"Рейс № {flight["FlightNumber"]}");
-                            
+                            fis.ProcessingJson(flight);
+
                         }
                     }
                     Console.ResetColor();
+                    fis.SaveJson();
                     break;
                 case 3:
+                    FlightInformationSystem FlIS = new FlightInformationSystem();
+
                     Console.WriteLine("В який день ?  (Формат: yyyy-MM-dd)");
                     Console.Write("###:");
                     string time = Console.ReadLine();
@@ -97,6 +108,7 @@ namespace Lab__6
                             departureTime.Date == targetDate.Date)
                         {
                             Console.WriteLine($"Рейс № {flight["FlightNumber"]} - Час відправлення: {departureTime:HH:mm}");
+                            FlIS.ProcessingJson(flight);
                             flightsFound = true;
                         }
                     }
@@ -109,8 +121,11 @@ namespace Lab__6
 
                     
                     Console.ResetColor();
+                    FlIS.SaveJson();
                     break;
                 case 4:
+                    FlightInformationSystem FISy = new FlightInformationSystem();
+
 
                     Console.WriteLine("Введіть початкову дату та час (Формат: yyyy-MM-ddTHH:mm:ss):");
                     Console.Write("###: ");
@@ -124,7 +139,7 @@ namespace Lab__6
                     Console.Write("###: ");
                     string destination = Console.ReadLine();
 
-                    // Перевірка та перетворення введених дат
+                    
                     if (!DateTime.TryParse(startTimeInput, out DateTime startTime) || !DateTime.TryParse(endTimeInput, out DateTime endTime))
                     {
                         Console.ForegroundColor = ConsoleColor.Red;
@@ -133,13 +148,13 @@ namespace Lab__6
                         return;
                     }
 
-                    // Фільтрація рейсів
+                    
                     var filteredFlights = flg.flightsArray.Where(flight => DateTime.TryParse(flight["DepartureTime"]?.ToString(), out DateTime departureTime) 
                     && DateTime.TryParse(flight["ArrivalTime"]?.ToString(), out DateTime arrivalTime) 
                     && departureTime >= startTime && arrivalTime <= endTime && flight["Destination"]?.ToString().Equals(destination, StringComparison.OrdinalIgnoreCase) 
                     == true).ToList();
 
-                    // Вивід відфільтрованих рейсів
+                    
                     if (filteredFlights.Count > 0)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
@@ -147,6 +162,7 @@ namespace Lab__6
                         foreach (JObject flight in filteredFlights)
                         {
                             Console.WriteLine($"Рейс № {flight["FlightNumber"]} - Час відправлення: {flight["DepartureTime"]} - Час прибуття: {flight["ArrivalTime"]} - Пункт призначення: {flight["Destination"]}");
+                            FISy.ProcessingJson(flight);
                         }
                     }
                     else
@@ -156,8 +172,11 @@ namespace Lab__6
                     }
 
                     Console.ResetColor();
+                    FISy.SaveJson();
                     break;
                 case 5:
+                    FlightInformationSystem FInS = new FlightInformationSystem();
+
                     Console.WriteLine("Введіть початкову дату та час (Формат: yyyy-MM-ddTHH:mm:ss) або натисніть Enter, щоб пропустити:");
                     Console.Write("###: ");
                     string stTimeInput = Console.ReadLine();
@@ -166,10 +185,10 @@ namespace Lab__6
                     Console.Write("###: ");
                     string enTimeInput = Console.ReadLine();
 
-                    // Поточний час
+                    
                     DateTime now = DateTime.Now;
 
-                    // Перевірка та перетворення введених дат
+                    
                     DateTime? stTime = null;
                     DateTime? enTime = null;
 
@@ -198,7 +217,7 @@ namespace Lab__6
                     }
 
 
-                    // Фільтрація рейсів
+                    
                     var filterFlights = flg.flightsArray
                         .Where(flight => DateTime.TryParse(flight["DepartureTime"]?.ToString(), out DateTime departureTime) &&
                                          DateTime.TryParse(flight["ArrivalTime"]?.ToString(), out DateTime arrivalTime) &&
@@ -206,7 +225,7 @@ namespace Lab__6
                                           (stTime.HasValue && enTime.HasValue && departureTime >= stTime && arrivalTime <= enTime)))
                         .ToList();
 
-                    // Вивід відфільтрованих рейсів
+                   
                     if (filterFlights.Count > 0)
                     {
                         Console.ForegroundColor = ConsoleColor.Green;
@@ -214,6 +233,7 @@ namespace Lab__6
                         foreach (JObject flight in filterFlights)
                         {
                             Console.WriteLine($"Рейс № {flight["FlightNumber"]} - Час відправлення: {flight["DepartureTime"]} - Час прибуття: {flight["ArrivalTime"]}- Пункт призначення: {flight["Destination"]}");
+                            FInS.ProcessingJson(flight);
                         }
                     }
                     else
@@ -223,6 +243,7 @@ namespace Lab__6
                     }
 
                     Console.ResetColor();
+                    FInS.SaveJson();
                     break;
 
                 default: Console.WriteLine("Введено не правильний знак"); break;

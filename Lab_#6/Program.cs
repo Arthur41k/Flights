@@ -10,9 +10,7 @@ namespace Lab__6
         {
             FlightQueryHandler flightQueryHandler = new FlightQueryHandler();
             flightQueryHandler.Procesing();
-
-            
-            
+ 
         }
     }
 }

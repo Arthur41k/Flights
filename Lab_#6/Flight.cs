@@ -15,8 +15,7 @@ namespace Lab__6
             Boarding,
             InFlight
         }
-        /*Атрибути для збереження даних про рейси.
-            Методи для роботи з даними рейсу*/
+        
         public string FlightNumber { get; set; }
         public string Airline { get; set; }
         public string Destination { get; set; }
@@ -30,9 +29,7 @@ namespace Lab__6
 
         public JArray flightsArray = new JArray();
 
-        /// <summary>
-        /// Обробляє дані з JSON файлу і десеарелізує його в масив
-        /// </summary>
+       
         public void LoadFlights()
         {
             string Path = "C:\\Users\\fakty\\OneDrive\\Рабочий стол\\Lab_#6\\flights_data.json";
@@ -40,21 +37,19 @@ namespace Lab__6
 
             JObject jsonObject = JObject.Parse(JsData);
 
-            // Отримуємо масив "flights"
+            
             this.flightsArray = (JArray)jsonObject["flights"];
 
         }
        
         
-        /// <summary>
-        /// Зберігає дані про обраний Flight
-        /// </summary>
+        
         public void SaveFlight(int N)
         {
             
 
             int i = 0;
-            // Перебираємо кожен об'єкт у масиві
+            
             foreach (JObject flight in flightsArray)
             {
                 if (i == N)
@@ -89,7 +84,7 @@ namespace Lab__6
                 i++;
                 if (N < 0 || N >= flightsArray.Count)
                 {
-                    //Console.WriteLine("Індекс рейсу поза межами допустимого діапазону.");
+                    
                     return;
                 }
             }
